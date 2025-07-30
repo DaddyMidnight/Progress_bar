@@ -1,0 +1,20 @@
+{
+  "name": "object-placer-saas",
+  "version": "1.0.0",
+  "description": "A micro SaaS app for virtually placing objects in different room locations using AR and computer vision",
+  "main": "server/index.js",
+  "scripts": {
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "server": "cd server && npm run dev",
+    "client": "cd client && npm start",
+    "build": "cd client && npm run build",
+    "start": "cd server && npm start",
+    "install-all": "npm install && cd server && npm install && cd ../client && npm install"
+  },
+  "keywords": ["saas", "ar", "computer-vision", "object-placement", "room-design"],
+  "author": "ObjectPlacer Team",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^7.6.0"
+  }
+}
