@@ -1,0 +1,62 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:5.0
+    container_name: objectplacer-mongo
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: objectplacer
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - objectplacer-network
+
+  backend:
+    build:
+      context: .
+      dockerfile: server/Dockerfile
+    container_name: objectplacer-backend
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    environment:
+      - NODE_ENV=development
+      - PORT=5000
+      - MONGODB_URI=mongodb://mongodb:27017/objectplacer
+      - JWT_SECRET=your_jwt_secret_key_here
+      - STRIPE_SECRET_KEY=sk_test_your_stripe_secret_key_here
+    depends_on:
+      - mongodb
+    volumes:
+      - ./server:/app
+      - /app/node_modules
+    networks:
+      - objectplacer-network
+
+  frontend:
+    build:
+      context: .
+      dockerfile: client/Dockerfile
+    container_name: objectplacer-frontend
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - REACT_APP_API_URL=http://localhost:5000
+    depends_on:
+      - backend
+    volumes:
+      - ./client:/app
+      - /app/node_modules
+    networks:
+      - objectplacer-network
+
+volumes:
+  mongodb_data:
+
+networks:
+  objectplacer-network:
+    driver: bridge
